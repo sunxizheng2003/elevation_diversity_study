@@ -21,3 +21,26 @@ fit_glm <- glm(richness ~ elevation_m + canopy_cover_pct, family = poisson, data
 # 4. 导出汇总表
 write.csv(summary(fit_glm)$coefficients, "outputs/models/glm_results.csv")
 message("GLM 模型分析完成，结果已保存至 outputs/models/glm_results.csv")
+
+# --- 追加：可视化海拔梯度上的丰富度拟合曲线 ---
+library(ggplot2)
+
+# 5. 绘制海拔与物种丰富度的散点图与拟合趋势线
+p_elevation <- ggplot(survey_data, aes(x = elevation_m, y = richness)) +
+  geom_point(aes(color = canopy_cover_pct), size = 2.5, alpha = 0.8) +
+  geom_smooth(method = "glm", method.args = list(family = "poisson"), 
+              color = "#2b8cbe", fill = "#a6bddb", linewidth = 1.1) +
+  scale_color_viridis_c(name = "Canopy Cover (%)") +
+  theme_classic(base_size = 12) +
+  labs(
+    title = "Species Richness along Elevation Gradient",
+    subtitle = "Poisson GLM fit with 95% confidence intervals",
+    x = "Elevation (m a.s.l.)",
+    y = "Species Richness (count)"
+  )
+
+# 6. 保存高质量矢量/栅格图表至 outputs/figures
+ggsave("outputs/figures/richness_vs_elevation.png", 
+       plot = p_elevation, width = 7, height = 5, dpi = 300)
+
+message("图表已成功导出至 outputs/figures/richness_vs_elevation.png")
