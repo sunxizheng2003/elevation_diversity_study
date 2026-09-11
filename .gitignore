@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+data/raw/*
+*.tif
+*.nc
+*.shp
+outputs/*.rds
